@@ -1,0 +1,169 @@
+/* Estilos gerais para o formulário */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+}
+
+.header {
+    text-align: center;
+    padding: 20px;
+}
+
+.header img {
+    width: 100px; /* Ajuste o tamanho conforme necessário */
+    height: auto;
+    vertical-align: middle;
+}
+
+header h1, h2 {
+    margin: 0;
+}
+
+/* Estilos para o formulário */
+form {
+    max-width: 1200px; /* Limita o tamanho máximo do formulário */
+    margin: 20px auto;
+    padding: 20px;
+    background-color: #f9f9f9;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+}
+
+.form-group {
+    margin-bottom: 15px;
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+.form-group input, .form-group select, .form-group textarea {
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
+}
+
+.form-group select, .form-group textarea {
+    width: 100%;
+}
+
+.form-group input[type="text"], .form-group input[type="number"] {
+    width: 100%;
+}
+/* Ajustes para os campos de justificativa */
+.form-group #justificativa {
+    grid-column: span 2; /* Faz o campo Justificativa ocupar as 2 colunas */
+    min-height: 150px;
+    max-width: 100%;
+}
+
+/* Ajuste dos campos de tamanho */
+.form-group input,
+.form-group select {
+    max-width: 100%;
+}
+
+button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    width: 200px;
+    margin-top: 20px;
+    grid-column: span 2; /* Faz o botão ocupar as 2 colunas */
+}
+
+button:hover {
+    background-color: #45a049;
+}
+
+form {
+    max-width: 800px;
+    margin: 0 auto;
+}
+
+@media (max-width: 768px) {
+    form {
+        grid-template-columns: 1fr; /* Para telas menores, exibe em uma coluna */
+    }
+}
+
+/* Estilos para a tabela dinâmica */
+.tabela-dinamica {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 20px;
+}
+
+.tabela-dinamica th,
+.tabela-dinamica td {
+    padding: 8px;
+    border: 1px solid #ccc;
+    text-align: left;
+}
+
+.tabela-dinamica th {
+    background-color: #f1f1f1;
+}
+
+.tabela-dinamica input {
+    width: 100%;
+	box-sizing: border-box;
+    padding: 5px;
+    font-size: 12px;
+    border-radius: 4px;
+    border: 1px solid #ccc;
+}
+
+.tabela-dinamica th:nth-child(1),
+.tabela-dinamica td:nth-child(1) {
+    width: 5%;
+}
+
+.tabela-dinamica th:nth-child(3),
+.tabela-dinamica td:nth-child(3) {
+    width: 10%;
+}
+
+.tabela-dinamica th:nth-child(4),
+.tabela-dinamica td:nth-child(4) {
+    width: 10%;
+}
+
+.tabela-dinamica th:nth-child(5),
+.tabela-dinamica td:nth-child(5) {
+    width: 15%;
+}
+
+.tabela-dinamica th:nth-child(6),
+.tabela-dinamica td:nth-child(6) {
+    width: 10%;
+}
+
+.tabela-dinamica th:nth-child(2),
+.tabela-dinamica td:nth-child(2) {
+    width: 50%; /* A coluna "Descrição do Material" ocupa metade da largura */
+}
+
+/* Estilos para o botão "Adicionar Linha" */
+#adicionar-linha {
+    background-color: #4CAF50;
+    color: white;
+    padding: 10px 20px;
+    font-size: 16px;
+    cursor: pointer;
+    border-radius: 4px;
+    margin-top: 10px;
+}
+
+#adicionar-linha:hover {
+    background-color: #45a049;
+}

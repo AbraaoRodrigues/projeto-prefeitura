@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Documento de Formalização de Demanda</title>
+    <link rel="stylesheet" href="css/styles.css"> <!-- Link para o arquivo CSS -->
+
+</head>
+<body>
+
+    <div class="header">
+        <img src="img/logo.png" alt="Logo da Prefeitura">
+        <h1>Prefeitura de Agudos</h1>
+        <h2>Documento de Formalização de Demanda</h2>
+    </div>
+
+    <form id="demandaForm">
+        <div class="form-group">
+            <label for="setor">Setor Solicitante</label>
+            <select id="setor" name="setor">
+				<option >Secretaria de Administração e Finanças</option>
+				<option value="agricultura">Secretaria de Agricultura</option>
+                <option value="assistencia_social">Secretaria de Assistência Social e Cidadania</option>                
+                <option value="educacao">Secretaria de Educação e Cultura</option>
+                <option value="esporte">Secretaria de Esporte e Lazer</option>
+                <option value="planejamento">Secretaria de Planejamento Urbano e Meio Ambiente</option>
+                <option value="obras">Secretaria de Obras e Infraestrutura</option>
+				<option value="saude">Secretaria de Saúde</option>
+                <option value="servicos">Secretaria de Serviços Urbanos e Mobilidade</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="tipo_solicitacao">Tipo de Solicitação</label>
+            <select id="tipo_solicitacao" name="tipo_solicitacao">
+                <option value="material">Material</option>
+                <option value="servico">Serviço</option>
+                <option value="obra">Obra</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="valor_estimado">Valor Estimado</label>
+            <input type="text" id="valor_estimado" name="valor_estimado" placeholder="R$ 0,00">
+        </div>
+
+        <div class="form-group">
+            <label for="modalidade">Modalidade</label>
+            <select id="modalidade" name="modalidade">
+                <option >Concorrência Eletrônica</option>
+                <option value="credenciamento">Credenciamento</option>
+                <option value="inexigibilidade">Inexigibilidade</option>
+                <option value="pregao_eletronico">Pregão Eletrônico</option>
+                <option value="pregao_presencial">Pregão Presencial</option>
+                <option value="registro_precos">Registro de Preços</option>
+            </select>
+        </div>
+
+        <div class="form-group">
+            <label for="numero_processo">Nº do Processo Licitatório</label>
+            <input type="text" id="numero_processo" name="numero_processo">
+        </div>
+
+        <div class="form-group">
+            <label for="numero_pregao">Nº do Pregão</label>
+            <input type="text" id="numero_pregao" name="numero_pregao">
+        </div>
+
+        <div class="form-group">
+            <label for="numero_contrato">Nº do Contrato</label>
+            <input type="text" id="numero_contrato" name="numero_contrato">
+        </div>
+
+        <div class="form-group">
+            <label for="forma_pagamento">Forma de Pagamento</label>
+            <input type="text" id="forma_pagamento" name="forma_pagamento">
+        </div>
+
+        <div class="form-group">
+            <label for="prazo_execucao">Prazo de Execução</label>
+            <input type="text" id="prazo_execucao" name="prazo_execucao">
+        </div>
+
+        <div class="form-group">
+            <label for="ficha">Fonte nº das Fichas</label>
+            <input type="text" id="ficha" name="ficha">
+        </div>
+
+        <div class="form-group">
+            <label for="aplicacao">Número da Aplicação</label>
+            <input type="text" id="aplicacao" name="aplicacao">
+        </div>
+
+		<div class="form-group">
+            <label for="empresa">Nome da Empresa/Fornecedor</label>
+            <input type="text" id="empresa" name="empresa">
+        </div>
+
+        <div class="form-group">
+            <label for="cnpj">CNPJ</label>
+            <input type="text" id="cnpj" name="cnpj" placeholder="00.000.000/0000-00">
+        </div>
+        <div class="form-group">
+            <label for="justificativa">Justificativa</label>
+            <textarea id="justificativa" name="justificativa" rows="4"></textarea>
+        </div>
+   
+<!-- Tabela dinâmica -->
+<div class="form-group">
+    <label for="tabela-itens">Itens</label>
+    <table id="tabela-itens" class="tabela-dinamica">
+        <thead>
+            <tr>
+                <th>Nº</th>
+                <th>Descrição do Material</th> <!-- Nova coluna -->
+				<th>Quantidade</th>
+                <th>Unidade</th>
+                <th>Valor Unitário</th>
+                <th>Total</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td class="numero">1</td>
+				<td><input type="text" class="descricao" /></td> <!-- Campo para Descrição -->
+                <td><input type="number" class="quantidade" oninput="calcularTotal(this)" /></td>
+                <td><input type="text" class="unidade" /></td>
+                <td><input type="text" class="valor-unitario" oninput="calcularTotal(this)" /></td>
+                <td><input type="text" class="total" readonly /></td>
+            </tr>
+        </tbody>
+    </table>
+    <input type="number" id="quantidade-linhas" placeholder="Qtd" min="1" style="width: 50px; margin-right: 10px;">
+<button type="button" id="adicionar-linhas" onclick="adicionarLinhas()">Adicionar Linhas</button>
+
+<button type="button" id="excluir-linhas" onclick="excluirLinhas()">Excluir Linhas Selecionadas</button>
+
+</div>
+
+<div class="form-group">
+    <label for="secretario">Secretário</label>
+    <input type="text" id="secretario" name="secretario" readonly>
+</div>
+
+<div class="form-group">
+    <label for="despacho">Despacho do Prefeito</label>
+    <textarea id="despacho" rows="4" readonly></textarea>
+</div>
+
+        <!-- Campo de Despacho do Prefeito será adicionado posteriormente -->
+	<button id="btn-gerar-pdf" type="button">Gerar PDF</button>
+    </form>
+		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js" defer></script>
+	<script src="js/gerarpdf.js" defer></script> 
+    <script src="js/script.js"></script> <!-- Link para o arquivo JavaScript -->
+	
+</body>
+</html>
