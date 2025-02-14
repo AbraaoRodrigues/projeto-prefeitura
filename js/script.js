@@ -211,3 +211,57 @@ document.getElementById("numero_contrato").addEventListener("input", atualizarDe
 // Garante que o despacho seja atualizado ao carregar a página
 atualizarDespacho();
 
+function limparFormulario() {
+    document.querySelectorAll("input, textarea, select").forEach((element) => {
+        if (element.tagName === "SELECT") {
+            element.selectedIndex = 0; // Define o primeiro valor como padrão
+        } else {
+            element.value = ""; // Zera os campos de input e textarea
+        }
+    });
+
+    // Limpa a tabela de itens
+    const tabela = document.querySelector("#tabela-itens tbody");
+    tabela.innerHTML = `<tr>
+        <td class="numero">1</td>
+        <td><input type="text" class="descricao" /></td>
+        <td><input type="number" class="quantidade" oninput="calcularTotal(this)" /></td>
+        <td><input type="text" class="unidade" /></td>
+        <td><input type="text" class="valor-unitario" oninput="calcularTotal(this)" /></td>
+        <td><input type="text" class="total" readonly /></td>
+    </tr>`;
+    // Aplica a máscara na primeira linha após a limpeza
+document.querySelector(".valor-unitario").addEventListener("input", function () {
+    aplicarMascaraDinheiro(this);
+    calcularTotal(this);
+});
+
+}
+
+// 🔹 Adiciona o botão na interface (pode colocar isso no HTML também)
+document.addEventListener("DOMContentLoaded", function () {
+    const btnLimpar = document.createElement("button");
+    btnLimpar.textContent = "Limpar";
+    btnLimpar.type = "button"; // 🔹 Evita comportamento de submissão do formulário
+    btnLimpar.style.marginLeft = "10px";
+    btnLimpar.style.backgroundColor = "#d9534f";
+    btnLimpar.style.color = "#fff";
+    btnLimpar.style.border = "none";
+    btnLimpar.style.padding = "10px 20px";
+    btnLimpar.style.fontSize = "16px";
+    btnLimpar.style.cursor = "pointer";
+    btnLimpar.style.borderRadius = "4px";
+
+    btnLimpar.addEventListener("click", function (event) {
+        event.preventDefault(); // 🔹 Previne qualquer comportamento padrão
+
+        let confirmacao = window.confirm("Tem certeza que deseja limpar todos os campos? Essa ação não pode ser desfeita!");
+
+        if (confirmacao) {
+            limparFormulario();
+        }
+    });
+
+    // Adiciona o botão na interface, ao lado do botão de gerar PDF
+    document.querySelector("button[onclick='gerarPDF()']").insertAdjacentElement("afterend", btnLimpar);
+});

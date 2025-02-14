@@ -1,4 +1,5 @@
 function gerarPDF() {
+    if (event) event.preventDefault(); // Impede o comportamento padrão do botão
     function dataPorExtenso() {
         const meses = [
             "janeiro", "fevereiro", "março", "abril", "maio", "junho",
@@ -36,6 +37,7 @@ function gerarPDF() {
                     },
                     {
                         text: `Página ${currentPage} de ${pageCount}`,
+                        style: "pageNumber", // Aplicação de estilo
                         alignment: "right",
                         width: 70 // 🔹 Reserva um espaço fixo na direita
                     }
@@ -134,7 +136,8 @@ function gerarPDF() {
             label: { fontSize: 12, bold: true, margin: [0, 5, 0, 2] },
             text: { fontSize: 12, margin: [0, 0, 0, 10] },
             date: { fontSize: 12, bold: true, alignment: "center" },
-            footer: { fontSize: 10, bold: true }
+            footer: { fontSize: 10, bold: true },
+            pageNumber: {fontSize:8} //Estilo da numeração de página
         }
     };
 
