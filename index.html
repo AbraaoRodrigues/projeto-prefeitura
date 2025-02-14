@@ -149,9 +149,10 @@
 </div>
 
         <!-- Campo de Despacho do Prefeito será adicionado posteriormente -->
-	<button id="btn-gerar-pdf" type="button">Gerar PDF</button>
+        <button onclick="gerarPDF()">Baixar PDF</button>
     </form>
-		<script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.4.0/jspdf.umd.min.js" defer></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/pdfmake.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdfmake/0.2.7/vfs_fonts.js"></script>    
 	<script src="js/gerarpdf.js" defer></script> 
     <script src="js/script.js"></script> <!-- Link para o arquivo JavaScript -->
 	

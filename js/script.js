@@ -1,13 +1,6 @@
 document.addEventListener("DOMContentLoaded", function () {
-    // Máscara para o campo Valor Estimado
-    document.getElementById("valor_estimado").addEventListener("input", function (e) {
-        let value = e.target.value.replace(/\D/g, "");
-        if (value.length <= 2) {
-            e.target.value = "R$ " + value;
-        } else {
-            e.target.value = "R$ " + value.replace(/(\d)(\d{2})$/, "$1,$2");
-        }
-    });
+    // Bloqueia o campo "Valor Estimado" para edição manual
+    document.getElementById("valor_estimado").setAttribute("readonly", true);
 
     // Máscara para o campo CNPJ
     document.getElementById("cnpj").addEventListener("input", function (e) {
@@ -20,19 +13,49 @@ document.addEventListener("DOMContentLoaded", function () {
                 .replace(/(\d{4})(\d)/, "$1-$2");
         }
     });
+
+    // Aplica máscara de dinheiro na primeira linha automaticamente
+    document.querySelector(".valor-unitario").addEventListener("input", function () {
+        aplicarMascaraDinheiro(this);
+        calcularTotal(this);
+    });
 });
+
+// Função para aplicar máscara de dinheiro
 function aplicarMascaraDinheiro(input) {
-    let value = input.value.replace(/\D/g, "");
-    value = (value / 100).toFixed(2) + ""; // Converte para formato decimal
-    value = value.replace(".", ","); // Substitui ponto por vírgula
-    input.value = "R$ " + value; // Adiciona o símbolo de real
+    let value = input.value.replace(/\D/g, ""); // Remove caracteres não numéricos
+    value = (parseFloat(value) / 100).toFixed(2); // Converte para decimal
+    input.value = "R$ " + value.replace(".", ","); // Formata e adiciona o símbolo de real
 }
 
+// Função para calcular o total de cada item e atualizar o valor estimado
+function calcularTotal(elemento) {
+    const linha = elemento.closest("tr");
+    const quantidade = parseFloat(linha.querySelector(".quantidade").value) || 0;
+    const valorUnitario = parseFloat(linha.querySelector(".valor-unitario").value.replace("R$", "").replace(",", ".")) || 0;
 
-    // Função para adicionar uma nova linha na tabela
-    function adicionarLinhas() {
-    const quantidade = parseInt(document.getElementById("quantidade-linhas").value) || 1; // Valor do campo ou 1
-	document.getElementById("quantidade-linhas").value = ""; // Limpa o campo
+    // Calcula o total e atualiza o campo correspondente
+    const total = quantidade * valorUnitario;
+    linha.querySelector(".total").value = "R$ " + total.toFixed(2).replace(".", ",");
+
+    // Atualiza o valor estimado
+    atualizarValorEstimado();
+}
+
+// Função para atualizar o valor estimado (soma dos totais da tabela)
+function atualizarValorEstimado() {
+    let totalEstimado = 0;
+    document.querySelectorAll(".total").forEach(input => {
+        let valor = parseFloat(input.value.replace("R$", "").replace(",", ".")) || 0;
+        totalEstimado += valor;
+    });
+    document.getElementById("valor_estimado").value = "R$ " + totalEstimado.toFixed(2).replace(".", ",");
+}
+
+// Função para adicionar novas linhas na tabela
+function adicionarLinhas() {
+    const quantidade = parseInt(document.getElementById("quantidade-linhas").value) || 1;
+    document.getElementById("quantidade-linhas").value = ""; // Limpa o campo
 
     const tabela = document.getElementById("tabela-itens").getElementsByTagName("tbody")[0];
 
@@ -41,7 +64,7 @@ function aplicarMascaraDinheiro(input) {
 
         // Número sequencial
         const numeroCell = novaLinha.insertCell(0);
-        numeroCell.textContent = tabela.rows.length; // Número automático
+        numeroCell.textContent = tabela.rows.length;
 
         // Descrição
         const descricaoCell = novaLinha.insertCell(1);
@@ -55,7 +78,10 @@ function aplicarMascaraDinheiro(input) {
         const inputQuantidade = document.createElement("input");
         inputQuantidade.type = "number";
         inputQuantidade.className = "quantidade";
-        inputQuantidade.setAttribute("oninput", "calcularTotal(this)");
+        inputQuantidade.addEventListener("input", function () {
+            calcularTotal(this);
+            atualizarDespacho();
+        });
         quantidadeCell.appendChild(inputQuantidade);
 
         // Unidade
@@ -70,7 +96,11 @@ function aplicarMascaraDinheiro(input) {
         const inputValorUnitario = document.createElement("input");
         inputValorUnitario.type = "text";
         inputValorUnitario.className = "valor-unitario";
-		inputValorUnitario.setAttribute("oninput", "aplicarMascaraDinheiro(this); calcularTotal(this)");
+        inputValorUnitario.addEventListener("input", function () {
+            aplicarMascaraDinheiro(this);
+            calcularTotal(this);
+            atualizarDespacho();
+        });
         valorUnitarioCell.appendChild(inputValorUnitario);
 
         // Total
@@ -78,10 +108,10 @@ function aplicarMascaraDinheiro(input) {
         const inputTotal = document.createElement("input");
         inputTotal.type = "text";
         inputTotal.className = "total";
-        inputTotal.setAttribute("oninput", "aplicarMascaraDinheiro(this)"); // Para exibição apenas
+        inputTotal.setAttribute("readonly", true);
         totalCell.appendChild(inputTotal);
 
-        // Checkbox para excluir linha
+        // Checkbox para exclusão
         const checkboxCell = novaLinha.insertCell(6);
         const checkbox = document.createElement("input");
         checkbox.type = "checkbox";
@@ -90,23 +120,27 @@ function aplicarMascaraDinheiro(input) {
     }
 }
 
+// Função para excluir linhas selecionadas
 function excluirLinhas() {
     const tabela = document.getElementById("tabela-itens").getElementsByTagName("tbody")[0];
-    const checkboxes = tabela.querySelectorAll(".linha-checkbox:checked"); // Linhas selecionadas
+    const checkboxes = tabela.querySelectorAll(".linha-checkbox:checked");
 
-    checkboxes.forEach((checkbox) => {
-        const linha = checkbox.closest("tr"); // Linha associada ao checkbox
+    checkboxes.forEach(checkbox => {
+        const linha = checkbox.closest("tr");
         linha.remove();
     });
 
-    // Atualiza os números das linhas após a exclusão
+    // Atualiza os números das linhas após exclusão
     Array.from(tabela.rows).forEach((row, index) => {
         row.cells[0].textContent = index + 1;
     });
+
+    // Atualiza o valor estimado
+    atualizarValorEstimado();
 }
 
-
-    document.addEventListener("DOMContentLoaded", function () {
+// Atualiza o secretário automaticamente ao mudar a secretaria
+document.addEventListener("DOMContentLoaded", function () {
     const secretarios = {
         "Secretaria de Administração e Finanças": "Thiago Portapila Gomes",
         "Secretaria de Assistência Social e Cidadania": "Paula Rachel Ghirotti Garcia",
@@ -119,69 +153,48 @@ function excluirLinhas() {
         "Secretaria de Serviços Urbanos e Mobilidade": "Luciano Coutinho",
     };
 
-    // Atualiza o campo Secretário
     function atualizarSecretario() {
         const setorDropdown = document.getElementById("setor");
         const secretaria = setorDropdown.options[setorDropdown.selectedIndex]?.text;
-        const secretario = secretarios[secretaria] || "";
-        document.getElementById("secretario").value = secretario;
+        document.getElementById("secretario").value = secretarios[secretaria] || "";
     }
 
-    // Chama a função ao carregar a página
     atualizarSecretario();
-
-    // Atualiza o campo ao mudar a seleção
     document.getElementById("setor").addEventListener("change", atualizarSecretario);
 });
 
-
-    // Função para calcular o total de cada item
-    function calcularTotal(elemento) {
-    const linha = elemento.closest("tr");
-    const quantidade = parseFloat(linha.querySelector(".quantidade").value) || 0;
-    const valorUnitario = parseFloat(linha.querySelector(".valor-unitario").value) || 0;
-
-    // Calcula o total
-    const total = quantidade * valorUnitario;
-
-    // Atualiza o campo "Total"
-    linha.querySelector(".total").value = total > 0 ? total.toFixed(2) : "";
-}
-
-document.addEventListener("DOMContentLoaded", function () {
-    function atualizarDespacho() {
+function atualizarDespacho() {
     const tipoSolicitacao = document.getElementById("tipo_solicitacao").options[document.getElementById("tipo_solicitacao").selectedIndex].text;
     const modalidade = document.getElementById("modalidade").options[document.getElementById("modalidade").selectedIndex].text;
     const numeroContrato = document.getElementById("numero_contrato").value;
     const numeroProcesso = document.getElementById("numero_processo").value;
+    const numeroPregao = document.getElementById("numero_pregao").value;
     const nomeEmpresa = document.getElementById("empresa").value;
     const cnpj = document.getElementById("cnpj").value;
 
     // Contar linhas preenchidas
     const tabela = document.getElementById("tabela-itens");
-    const rows = Array.from(tabela.querySelectorAll("tbody tr")).filter((row) => {
+    const rows = Array.from(tabela.querySelectorAll("tbody tr")).filter(row => {
         const descricao = row.querySelector(".descricao").value.trim();
-        return descricao !== "";
+        return descricao !== ""; // Apenas conta linhas com descrição preenchida
     });
+
     const linhasPreenchidas = rows.length;
 
-    // Determinar o despacho
     let despacho = "";
-    if (tipoSolicitacao === "Serviço") {
-        if (linhasPreenchidas === 1) {
-            despacho = `Autorizo a contratação do serviço relacionado na tabela acima para a empresa: ${nomeEmpresa}, CNPJ/MF Nº ${cnpj}, conforme Processo Licitatório de ${modalidade} Nº ${numeroProcesso}, Contrato Nº ${numeroContrato}.`;
-        } else if (linhasPreenchidas > 1) {
-            despacho = `Autorizo a contratação dos serviços relacionados na tabela acima para a empresa: ${nomeEmpresa}, CNPJ/MF Nº ${cnpj}, conforme Processo Licitatório de ${modalidade} Nº ${numeroProcesso}, Contrato Nº ${numeroContrato}.`;
+
+    if (modalidade === "Inexigibilidade") {
+        despacho = `Autorizo a contratação do serviço abaixo para o fornecedor: ${nomeEmpresa} - CNPJ: ${cnpj}. Com dispensa de licitação de acordo com Art. 75, inciso II da Lei 14.133/2021.`;
+    } else if (linhasPreenchidas > 0) {
+        if (tipoSolicitacao === "Serviço") {
+            despacho = `Autorizo a contratação ${linhasPreenchidas === 1 ? "do serviço relacionado" : "dos serviços relacionados"} na tabela acima para a empresa: ${nomeEmpresa}, CNPJ/MF Nº ${cnpj}, conforme Processo Licitatório de ${modalidade} Nº ${numeroProcesso}, Nº do Pregão ${numeroPregao} e Contrato Nº ${numeroContrato}.`;
+        } else {
+            despacho = `Autorizo a aquisição ${linhasPreenchidas === 1 ? "do item relacionado" : "dos itens relacionados"} na tabela acima para a empresa: ${nomeEmpresa}, CNPJ/MF Nº ${cnpj}, conforme Processo Licitatório de ${modalidade} Nº ${numeroProcesso}, Nº do Pregão ${numeroPregao} e Contrato Nº ${numeroContrato}.`;
         }
-    } else if (tipoSolicitacao === "Material") {
-        if (linhasPreenchidas === 1) {
-            despacho = `Autorizo a aquisição do item relacionado na tabela acima para a empresa: ${nomeEmpresa}, CNPJ/MF Nº ${cnpj}, conforme Processo Licitatório de ${modalidade} Nº ${numeroProcesso}, Contrato Nº ${numeroContrato}.`;
-        } else if (linhasPreenchidas > 1) {
-            despacho = `Autorizo a aquisição dos itens relacionados na tabela acima para a empresa: ${nomeEmpresa}, CNPJ/MF Nº ${cnpj}, conforme Processo Licitatório de ${modalidade} Nº ${numeroProcesso}, Contrato Nº ${numeroContrato}.`;
-        }
+    } else {
+        despacho = ""; // Se não houver nenhuma linha preenchida, limpa o despacho
     }
 
-    // Atualizar o campo de despacho
     document.getElementById("despacho").value = despacho;
 }
 
@@ -191,8 +204,10 @@ document.getElementById("modalidade").addEventListener("change", atualizarDespac
 document.getElementById("tabela-itens").addEventListener("input", atualizarDespacho);
 document.getElementById("empresa").addEventListener("input", atualizarDespacho);
 document.getElementById("cnpj").addEventListener("input", atualizarDespacho);
+document.getElementById("numero_processo").addEventListener("input", atualizarDespacho);
+document.getElementById("numero_pregao").addEventListener("input", atualizarDespacho);
+document.getElementById("numero_contrato").addEventListener("input", atualizarDespacho);
 
-// Gerar o despacho inicial ao carregar a página
+// Garante que o despacho seja atualizado ao carregar a página
 atualizarDespacho();
 
-});
