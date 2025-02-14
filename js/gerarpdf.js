@@ -49,29 +49,18 @@ function gerarPDF() {
         content: [
             { text: "Dados da Solicitação", style: "sectionHeader", margin: [0, 10, 0, 5] },
 
-            { text: "Setor Solicitante:", style: "label" },
-            { text: document.getElementById("setor").value, style: "text" },
-
-            { text: "Tipo de Solicitação:", style: "label" },
-            { text: document.getElementById("tipo_solicitacao").options[document.getElementById("tipo_solicitacao").selectedIndex].text, style: "text" },
-
-            { text: "Modalidade:", style: "label" },
-            { text: document.getElementById("modalidade").options[document.getElementById("modalidade").selectedIndex].text, style: "text" },
-
-            { text: "Valor Estimado:", style: "label" },
-            { text: document.getElementById("valor_estimado").value, style: "text" },
-
-            { text: "Forma de Pagamento:", style: "label" },
-            { text: document.getElementById("forma_pagamento").value, style: "text" },
-
-            { text: "Prazo de Execução:", style: "label" },
-            { text: document.getElementById("prazo_execucao").value, style: "text" },
+            { text: [{ text: "Setor Solicitante: ", bold: true }, document.getElementById("setor").value], style: "text" },
+            { text: [{ text: "Tipo de Solicitação: ", bold: true }, document.getElementById("tipo_solicitacao").options[document.getElementById("tipo_solicitacao").selectedIndex].text], style: "text" },
+            { text: [{ text: "Modalidade: ", bold: true }, document.getElementById("modalidade").options[document.getElementById("modalidade").selectedIndex].text], style: "text" },
+            { text: [{ text: "Valor Estimado: ", bold: true }, document.getElementById("valor_estimado").value], style: "text" },
+            { text: [{ text: "Forma de Pagamento: ", bold: true }, document.getElementById("forma_pagamento").value], style: "text" },
+            { text: [{ text: "Prazo de Execução: ", bold: true }, document.getElementById("prazo_execucao").value], style: "text" },
 
             { text: "Justificativa", style: "sectionHeader", margin: [0, 10, 0, 5] },
             { text: document.getElementById("justificativa").value, style: "text", margin: [0, 0, 0, 10] },
 
-            { text: `Empresa: ${document.getElementById("empresa").value}`, style: "label", margin: [0, 10, 0, 0] },
-            { text: `CNPJ: ${document.getElementById("cnpj").value}`, style: "text" },
+            { text: [{ text: "Empresa: ", bold: true }, document.getElementById("empresa").value], style: "text" },
+            { text: [{ text: "CNPJ: ", bold: true }, document.getElementById("cnpj").value], style: "text" },
 
             { text: "Itens Solicitados:", style: "sectionHeader", margin: [0, 10, 0, 5] },
             {
@@ -102,16 +91,16 @@ function gerarPDF() {
                 columns: [
                     {
                         stack: [
+                            { text: "_________________________", alignment: "center", margin: [0, 5, 0, 10] },
                             { text: "Rafael Lima Fernandes", bold: true, alignment: "center" },
-                            { text: "Prefeito Municipal", alignment: "center" },
-                            { text: "_________________________", alignment: "center", margin: [0, 5, 0, 10] }
+                            { text: "Prefeito Municipal", alignment: "center" }
                         ]
                     },
                     {
                         stack: [
+                            { text: "_________________________", alignment: "center", margin: [0, 5, 0, 10] },
                             { text: document.getElementById("secretario").value, bold: true, alignment: "center" },
-                            { text: "Secretário", alignment: "center" },
-                            { text: "_________________________", alignment: "center", margin: [0, 5, 0, 10] }
+                            { text: "Secretário(a)", alignment: "center" }
                         ]
                     }
                 ]
